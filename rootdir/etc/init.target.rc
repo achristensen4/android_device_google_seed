@@ -27,7 +27,7 @@
 
 on early-init
     #set non-stand-charger can used
-    write /sys/module/phy_msm_usb/parameters/floated_charger_enable Y
+    write /sys/module/phy_msm_usb/parameters/floated_charger_enable N
 
 on boot
     # charger
@@ -47,7 +47,7 @@ on boot
     chown system system /sys/class/leds/blue/led_time
 
     # Adaptive LMK
-    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
+    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 0
     write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 81250
 
     # Per-process reclaim
@@ -64,7 +64,7 @@ service vm_bms /system/bin/vm_bms
 
 on charger
    wait /dev/block/bootdevice/by-name/system
-   mount ext4 /dev/block/bootdevice/by-name/system /system ro barrier=1
+   mount ext4 /dev/block/bootdevice/by-name/system /system rw barrier=1
    chown root system /sys/class/power_supply/bms/current_now
    chown root system /sys/class/power_supply/bms/voltage_ocv
    chmod 0664 /sys/class/power_supply/bms/current_now
@@ -81,7 +81,6 @@ on property:init.svc.zygote=restarting
 service calibacc /system/bin/accelcal
     class main
     oneshot
-    disabled
 
 on property:sys.sensors.acc=*
     start calibacc
